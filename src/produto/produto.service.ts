@@ -16,18 +16,15 @@ export class ProdutoService {
 
   async update(
     id: string,
-    idUsuario: string,
     body: Partial<ProdutoEntity>,
   ): Promise<ProdutoEntity> {
-    const possivelProduto = this.produtos.find(
-      (produto) => produto.id === id && produto.idUsuario === idUsuario,
-    );
+    const possivelProduto = this.produtos.find((produto) => produto.id === id);
     const naoExisteProduto = undefined;
 
     if (naoExisteProduto !== possivelProduto) {
       // Percorra o que existe dentro do body, e atualize o 'possivelProduto'.
       for (const [key, value] of Object.entries(body)) {
-        if (key !== 'id' && key !== 'idUsuario') {
+        if (key !== 'id') {
           possivelProduto[key] = value;
         }
       }
@@ -36,5 +33,18 @@ export class ProdutoService {
     }
 
     return naoExisteProduto;
+  }
+
+  async delete(id: string): Promise<Boolean> {
+    const encontrado = this.produtos.find((produto) => produto.id === id);
+    const naoEncontrado = undefined;
+
+    if (naoEncontrado !== encontrado) {
+      this.produtos = this.produtos.filter((produto) => produto.id !== id);
+      return true;
+    }
+
+    // Produto não existe
+    return false;
   }
 }

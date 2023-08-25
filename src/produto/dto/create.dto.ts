@@ -5,7 +5,9 @@ import {
   IsNotEmpty,
   IsUUID,
   Max,
+  MaxLength,
   Min,
+  MinLength,
   ValidateNested,
 } from 'class-validator';
 import { CaracteristicaDTO } from './caracteristica.dto';
@@ -16,26 +18,26 @@ export class CreateDTO {
   @IsNotEmpty()
   nome: string;
 
-  @IsInt({ message: 'O campo (valor) deve ser um número inteiro' })
+  @IsInt()
   @Min(1, { message: 'O campo (valor) deve ser um número inteiro positivo' })
   valor: number;
 
   @IsInt({ message: 'O campo (quantidade) deve ser um número inteiro' })
-  @Min(0, {
+  @Min(1, {
     message: 'O campo (quantidade) deve ser um número inteiro positivo',
   })
   quantidade: number;
 
   @IsNotEmpty({ message: 'O campo (descricao) deve ser informado' })
-  @Max(1000, {
+  @MaxLength(1000, {
     message: 'O campo (descricao) deve ter no máximo 1000 caracteres',
   })
   descricao: string;
 
+  @ValidateNested({each: true})
   @ArrayMinSize(3, {
     message: 'O campo (caracteristicas) deve ter no mínimo 3 itens',
   })
-  @ValidateNested()
   @IsArray({ message: 'O campo (caracteristicas) deve ser um array' })
   @Type(() => CaracteristicaDTO)
   caracteristicas: CaracteristicaDTO[];
